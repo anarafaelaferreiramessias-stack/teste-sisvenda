@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SisVenda | Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Estilização Geral */
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --dark: #0f172a;
+            --bg: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+
+        /* Container de Login */
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo-area i {
+            font-size: 3.5rem;
+            color: var(--primary);
+        }
+
+        .logo-area h1 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin: 10px 0;
+        }
+
+        .logo-area p {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        /* Campos de Entrada */
+        .input-box {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 15px;
+            top: 38px;
+            color: #94a3b8;
+        }
+
+        .input-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            outline: none;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        .input-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Botão */
+        .btn-login {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Mensagem de Erro */
+        #error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            display: none;
+            background: #fee2e2;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .footer-info {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo-area">
+            <i class="ri-store-2-line"></i>
+            <h1>SisVenda</h1>
+            <p>Gestão Inteligente de Vendas</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-box">
+                <label for="user">Usuário</label>
+                <i class="ri-user-line"></i>
+                <input type="text" id="user" placeholder="Digite seu usuário" required>
+            </div>
+
+            <div class="input-box">
+                <label for="pass">Senha</label>
+                <i class="ri-lock-line"></i>
+                <input type="password" id="pass" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-login">Acessar Painel</button>
+            
+            <div id="error-message">Usuário ou senha inválidos!</div>
+        </form>
+
+        <div class="footer-info">
+            &copy; 2026 SisVenda Pro - Todos os direitos reservados.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Impede o recarregamento da página
+
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+            const error = document.getElementById('error-message');
+
+            // Simulação de login (admin / 1234)
+            if (user === "admin" && pass === "1234") {
+                alert("Login realizado com sucesso! Redirecionando...");
+                // Aqui você redirecionaria para o sistema principal
+                // window.location.href = "dashboard.html"; 
+            } else {
+                error.style.display = "block";
+                // Efeito de balançar ao errar
+                const card = document.querySelector('.login-card');
+                card.style.animation = "shake 0.5s";
+                setTimeout(() => card.style.animation = "", 500);
+            }
+        });
+    </script>
+
+    <style>
+        /* Animação de erro */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+</body>
+</html>
