@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SisVenda | Acesso</title>
+    <title>AnimeBear | Loja Oficial</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         :root {
             --glass-bg: rgba(255, 255, 255, 0.12);
             --glass-border: rgba(255, 255, 255, 0.2);
             --accent: #00f2fe;
+            --pink-anime: #ff85a1;
             --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
 
         body {
-            margin: 0; padding: 0; height: 100vh;
+            margin: 0; padding: 0; min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(-45deg, #0f172a, #1e293b, #312e81, #1e1b4b);
             background-size: 400% 400%;
             animation: gradientBG 12s ease infinite;
-            overflow: hidden;
+            color: white;
         }
 
         @keyframes gradientBG {
@@ -29,217 +30,202 @@
             100% { background-position: 0% 50%; }
         }
 
-        .login-container {
+        /* Container de Login */
+        .main-card {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             padding: 40px;
             border-radius: 28px;
-            width: 100%;
+            width: 90%;
             max-width: 400px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             text-align: center;
-            transition: 0.5s;
         }
 
+        /* Estilos da Loja (Injetados via JS) */
+        .shop-container {
+            max-width: 1000px; width: 95%; margin: 20px auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px; padding: 20px;
+        }
+
+        .bear-card {
+            background: white; color: #1e293b;
+            padding: 20px; border-radius: 20px;
+            text-align: center; transition: 0.3s;
+            position: relative; overflow: hidden;
+        }
+
+        .bear-card:hover { transform: translateY(-10px); }
+        .bear-emoji { font-size: 4rem; margin-bottom: 10px; display: block; }
+        .bear-card h3 { margin: 10px 0; color: #1e293b; }
+        .price { color: var(--pink-anime); font-size: 1.4rem; font-weight: bold; }
+        
+        .buy-btn {
+            background: var(--pink-anime); color: white;
+            border: none; padding: 10px 20px; border-radius: 10px;
+            margin-top: 15px; cursor: pointer; width: 100%; font-weight: bold;
+        }
+
+        /* Gerais */
+        .hidden { display: none !important; }
         .header { margin-bottom: 30px; }
         .icon-circle {
             width: 70px; height: 70px;
             background: var(--primary-gradient);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
             margin: 0 auto 15px;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
         }
-        .icon-circle i { font-size: 2rem; color: #fff; }
-        h1 { color: #fff; font-size: 1.6rem; margin: 0; letter-spacing: 1px; }
-
         .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { color: rgba(255, 255, 255, 0.8); font-size: 0.8rem; margin-bottom: 8px; display: block; }
-        
+        .input-group label { font-size: 0.8rem; margin-bottom: 8px; display: block; }
         .input-wrapper { position: relative; display: flex; align-items: center; }
         .input-wrapper i { position: absolute; left: 15px; color: var(--accent); }
-        .input-wrapper input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
+        input {
+            width: 100%; background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 15px 12px 45px;
-            border-radius: 12px;
-            color: #fff;
-            outline: none;
-            transition: 0.3s;
+            padding: 12px 15px 12px 45px; border-radius: 12px;
+            color: #fff; outline: none; box-sizing: border-box;
         }
-        .input-wrapper input:focus { border-color: var(--accent); background: rgba(255, 255, 255, 0.1); }
-
-        button {
+        button.primary-btn {
             width: 100%; padding: 14px; border: none; border-radius: 12px;
             background: var(--primary-gradient); color: #0f172a;
-            font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px;
+            font-weight: 700; cursor: pointer;
         }
-        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2); }
-
-        .signup-footer {
-            margin-top: 30px; padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .signup-footer p { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; }
-        
-        .btn-signup-toggle {
-            display: inline-block; margin-top: 10px; color: var(--accent);
-            text-decoration: none; font-weight: 600; padding: 8px 20px;
-            border: 1px solid var(--accent); border-radius: 30px; transition: 0.3s; cursor: pointer;
-        }
-        .btn-signup-toggle:hover { background: var(--accent); color: #0f172a; }
-
-        .message { font-size: 0.8rem; margin-top: 15px; display: none; padding: 10px; border-radius: 8px; }
-        .error { color: #f87171; background: rgba(248, 113, 113, 0.1); }
-        .success { color: #4ade80; background: rgba(74, 222, 128, 0.1); }
-
-        /* Classe para esconder elementos */
-        .hidden { display: none; }
+        .signup-footer { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .btn-link { color: var(--accent); cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="login-container">
-        <div id="login-area">
-            <div class="header">
-                <div class="icon-circle"><i class="ri-store-3-line"></i></div>
-                <h1>SisVenda Login</h1>
+    <div id="app-content">
+        <div class="main-card">
+            <div id="login-area">
+                <div class="header">
+                    <div class="icon-circle"><i class="ri-bear-smile-line" style="font-size: 2rem;"></i></div>
+                    <h1>AnimeBear Login</h1>
+                </div>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label>USUÁRIO</label>
+                        <div class="input-wrapper">
+                            <i class="ri-user-line"></i>
+                            <input type="text" id="user" placeholder="Seu usuário" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>SENHA</label>
+                        <div class="input-wrapper">
+                            <i class="ri-lock-line"></i>
+                            <input type="password" id="pass" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="primary-btn">ENTRAR NA LOJA</button>
+                </form>
+                <div class="signup-footer">
+                    <p>Não tem conta? <span class="btn-link" onclick="toggleForm(true)">Criar agora</span></p>
+                </div>
             </div>
 
-            <form id="loginForm">
-                <div class="input-group">
-                    <label>USUÁRIO</label>
-                    <div class="input-wrapper">
-                        <i class="ri-user-line"></i>
-                        <input type="text" id="user" placeholder="Seu usuário" required>
-                    </div>
+            <div id="signup-area" class="hidden">
+                <div class="header">
+                    <h1>Nova Conta</h1>
                 </div>
-
-                <div class="input-group">
-                    <label>SENHA</label>
-                    <div class="input-wrapper">
-                        <i class="ri-lock-line"></i>
-                        <input type="password" id="pass" placeholder="••••••••" required>
+                <form id="signupForm">
+                    <div class="input-group">
+                        <input type="text" id="new-user" placeholder="Escolha um usuário" required>
                     </div>
-                </div>
-
-                <button type="submit">ENTRAR</button>
-            </form>
-
-            <div class="signup-footer">
-                <p>Ainda não tem uma conta?</p>
-                <a class="btn-signup-toggle" onclick="toggleForm()">CRIAR NOVA CONTA</a>
-            </div>
-        </div>
-
-        <div id="signup-area" class="hidden">
-            <div class="header">
-                <div class="icon-circle"><i class="ri-user-add-line"></i></div>
-                <h1>Criar Conta</h1>
-            </div>
-
-            <form id="signupForm">
-                <div class="input-group">
-                    <label>ESCOLHA UM USUÁRIO</label>
-                    <div class="input-wrapper">
-                        <i class="ri-user-line"></i>
-                        <input type="text" id="new-user" placeholder="Ex: admin" required>
+                    <div class="input-group">
+                        <input type="password" id="new-pass" placeholder="Escolha uma senha" required>
                     </div>
+                    <button type="submit" class="primary-btn">CADASTRAR</button>
+                </form>
+                <div class="signup-footer">
+                    <p><span class="btn-link" onclick="toggleForm(false)">Voltar ao Login</span></p>
                 </div>
-
-                <div class="input-group">
-                    <label>ESCOLHA UMA SENHA</label>
-                    <div class="input-wrapper">
-                        <i class="ri-lock-line"></i>
-                        <input type="password" id="new-pass" placeholder="••••••••" required>
-                    </div>
-                </div>
-
-                <button type="submit">CADASTRAR</button>
-            </form>
-
-            <div class="signup-footer">
-                <p>Já possui uma conta?</p>
-                <a class="btn-signup-toggle" onclick="toggleForm()">VOLTAR AO LOGIN</a>
             </div>
         </div>
-
-        <div id="msg" class="message"></div>
     </div>
 
     <script>
-        const loginArea = document.getElementById('login-area');
-        const signupArea = document.getElementById('signup-area');
-        const msg = document.getElementById('msg');
-
-        // Alterna entre formulário de login e cadastro
-        function toggleForm() {
-            loginArea.classList.toggle('hidden');
-            signupArea.classList.toggle('hidden');
-            msg.style.display = 'none';
+        // --- 1. LÓGICA DE NAVEGAÇÃO ENTRE TELAS ---
+        function toggleForm(isSignup) {
+            document.getElementById('login-area').classList.toggle('hidden', isSignup);
+            document.getElementById('signup-area').classList.toggle('hidden', !isSignup);
         }
 
-        function showMessage(text, type) {
-            msg.textContent = text;
-            msg.className = `message ${type}`;
-            msg.style.display = 'block';
-        }
-
-        // --- LÓGICA DE CADASTRO ---
+        // --- 2. LÓGICA DE CADASTRO ---
         document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const user = document.getElementById('new-user').value.trim();
-            const pass = document.getElementById('new-pass').value.trim();
-
-            // Pega usuários já cadastrados ou cria array vazio
+            const u = document.getElementById('new-user').value;
+            const p = document.getElementById('new-pass').value;
             let users = JSON.parse(localStorage.getItem('usuarios_db')) || [];
-
-            // Verifica se o usuário já existe
-            if (users.find(u => u.user === user)) {
-                showMessage("Este usuário já existe!", "error");
-                return;
-            }
-
-            // Salva novo usuário
-            users.push({ user: user, pass: pass });
-            localStorage.setItem('usuarios_db', JSON.stringify(users));
-
-            showMessage("Cadastro realizado! Faça login agora.", "success");
             
-            // Limpa campos e volta para login após 1.5s
-            setTimeout(() => {
-                document.getElementById('signupForm').reset();
-                toggleForm();
-            }, 1500);
+            users.push({user: u, pass: p});
+            localStorage.setItem('usuarios_db', JSON.stringify(users));
+            alert("Conta criada! Agora faça o login.");
+            toggleForm(false);
         });
 
-        // --- LÓGICA DE LOGIN ---
+        // --- 3. LÓGICA DE LOGIN PARA ABRIR A LOJA ---
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const user = document.getElementById('user').value;
-            const pass = document.getElementById('pass').value;
-
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
             let users = JSON.parse(localStorage.getItem('usuarios_db')) || [];
 
-            // Adiciona um usuário padrão caso o banco esteja vazio
-            if (users.length === 0 && user === "admin" && pass === "1234") {
-                alert("Sucesso! (Usuário padrão)");
-                return;
-            }
+            const userValido = users.find(account => account.user === u && account.pass === p);
 
-            // Verifica se o usuário e senha batem com o que está no LocalStorage
-            const found = users.find(u => u.user === user && u.pass === pass);
-
-            if (found) {
-                alert("Login realizado com sucesso! Bem-vindo.");
-                // window.location.href = "dashboard.html";
+            if (userValido || (u === "admin" && p === "1234")) {
+                abrirLoja(u);
             } else {
-                showMessage("Usuário ou senha incorretos!", "error");
+                alert("Usuário ou senha incorretos!");
             }
         });
+
+        // --- 4. O SITE DA LOJA (ESTA PARTE ESTÁ "DENTRO" DO JS) ---
+        function abrirLoja(nomeUsuario) {
+            const app = document.getElementById('app-content');
+            
+            // Mudamos o fundo para algo mais fofo
+            document.body.style.alignItems = "flex-start";
+            
+            // Injetamos o HTML da Loja
+            app.innerHTML = `
+                <div style="text-align: center; width: 100%; padding-top: 50px;">
+                    <h1 style="color: white; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">🌸 Bem-vindo(a) à AnimeBear, ${nomeUsuario}!</h1>
+                    <p>Os ursinhos de anime mais fofos do mundo</p>
+                    <button onclick="location.reload()" style="background: #ef4444; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;">Sair</button>
+                </div>
+
+                <div class="shop-container">
+                    ${gerarProdutos()}
+                </div>
+            `;
+        }
+
+        function gerarProdutos() {
+            const produtos = [
+                { nome: "Urso Ninja (Leaf)", emoji: "🦊", preco: "89.90", desc: "Inspirado no Naruto" },
+                { nome: "Urso Pirata (Sunny)", emoji: "🏴‍☠️", preco: "95.00", desc: "Inspirado no Luffy" },
+                { nome: "Urso Saiyajin", emoji: "⚡", preco: "110.00", desc: "Inspirado no Goku" },
+                { nome: "Urso Titã", emoji: "🧱", preco: "120.00", desc: "Inspirado no Eren" },
+                { nome: "Urso Mago", emoji: "🧙", preco: "99.90", desc: "Inspirado no Black Clover" },
+                { nome: "Urso Caçador", emoji: "🎴", preco: "105.00", desc: "Inspirado no Tanjiro" }
+            ];
+
+            return produtos.map(p => `
+                <div class="bear-card">
+                    <span class="bear-emoji">${p.emoji}</span>
+                    <h3>${p.nome}</h3>
+                    <p style="font-size: 0.8rem; color: #64748b;">${p.desc}</p>
+                    <p class="price">R$ ${p.preco}</p>
+                    <button class="buy-btn" onclick="alert('Adicionado ao carrinho!')">COMPRAR</button>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 </html>
