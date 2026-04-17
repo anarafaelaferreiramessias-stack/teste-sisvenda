@@ -1,231 +1,87 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeBear | Loja Oficial</title>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <style>
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.12);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --accent: #00f2fe;
-            --pink-anime: #ff85a1;
-            --primary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
+import sqlite3
 
-        body {
-            margin: 0; padding: 0; min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #312e81, #1e1b4b);
-            background-size: 400% 400%;
-            animation: gradientBG 12s ease infinite;
-            color: white;
-        }
+# --- Configuração do Banco ---
+def conectar():
+    return sqlite3.connect("sistema.db")
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+def inicializar_banco():
+    conn = conectar()
+    cursor = conn.cursor()
+    # Cria as tabelas
+    cursor.execute('CREATE TABLE IF NOT EXISTS usuarios (id INTEGER PRIMARY KEY, username TEXT, password TEXT)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS clientes (id INTEGER PRIMARY KEY, nome TEXT, email TEXT)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS produtos (id INTEGER PRIMARY KEY, nome TEXT, preco REAL)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS vendas (id INTEGER PRIMARY KEY, cliente_id INTEGER, total REAL)')
+   
+    # Cria um usuário padrão se não existir nenhum
+    cursor.execute("SELECT count(*) FROM usuarios")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("INSERT INTO usuarios (username, password) VALUES (?, ?)", ('admin', '1234'))
+   
+    conn.commit()
+    conn.close()
 
-        /* Container de Login */
-        .main-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            padding: 40px;
-            border-radius: 28px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
+# --- Funções do Sistema ---
+def autenticar(user, pwd):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM usuarios WHERE username=? AND password=?", (user, pwd))
+    resultado = cursor.fetchone()
+    conn.close()
+    return resultado is not None
 
-        /* Estilos da Loja (Injetados via JS) */
-        .shop-container {
-            max-width: 1000px; width: 95%; margin: 20px auto;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px; padding: 20px;
-        }
+def cadastrar_cliente(nome, email):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO clientes (nome, email) VALUES (?, ?)", (nome, email))
+    conn.commit()
+    conn.close()
+    print("Cliente cadastrado com sucesso!")
 
-        .bear-card {
-            background: white; color: #1e293b;
-            padding: 20px; border-radius: 20px;
-            text-align: center; transition: 0.3s;
-            position: relative; overflow: hidden;
-        }
+def cadastrar_produto(nome, preco):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO produtos (nome, preco) VALUES (?, ?)", (nome, preco))
+    conn.commit()
+    conn.close()
+    print("Produto cadastrado com sucesso!")
 
-        .bear-card:hover { transform: translateY(-10px); }
-        .bear-emoji { font-size: 4rem; margin-bottom: 10px; display: block; }
-        .bear-card h3 { margin: 10px 0; color: #1e293b; }
-        .price { color: var(--pink-anime); font-size: 1.4rem; font-weight: bold; }
-        
-        .buy-btn {
-            background: var(--pink-anime); color: white;
-            border: none; padding: 10px 20px; border-radius: 10px;
-            margin-top: 15px; cursor: pointer; width: 100%; font-weight: bold;
-        }
+def registrar_venda(cliente_id, total):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO vendas (cliente_id, total) VALUES (?, ?)", (cliente_id, total))
+    conn.commit()
+    conn.close()
+    print("Venda registrada com sucesso!")
 
-        /* Gerais */
-        .hidden { display: none !important; }
-        .header { margin-bottom: 30px; }
-        .icon-circle {
-            width: 70px; height: 70px;
-            background: var(--primary-gradient);
-            border-radius: 50%; display: flex;
-            align-items: center; justify-content: center;
-            margin: 0 auto 15px;
-        }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { font-size: 0.8rem; margin-bottom: 8px; display: block; }
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-wrapper i { position: absolute; left: 15px; color: var(--accent); }
-        input {
-            width: 100%; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 15px 12px 45px; border-radius: 12px;
-            color: #fff; outline: none; box-sizing: border-box;
-        }
-        button.primary-btn {
-            width: 100%; padding: 14px; border: none; border-radius: 12px;
-            background: var(--primary-gradient); color: #0f172a;
-            font-weight: 700; cursor: pointer;
-        }
-        .signup-footer { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
-        .btn-link { color: var(--accent); cursor: pointer; text-decoration: underline; }
-    </style>
-</head>
-<body>
+# --- Menu Principal ---
+if __name__ == "__main__":
+    inicializar_banco()
+   
+    print("--- Bem-vindo ao SisVenda ---")
+    user = input("Usuário: ")
+    pwd = input("Senha: ")
 
-    <div id="app-content">
-        <div class="main-card">
-            <div id="login-area">
-                <div class="header">
-                    <div class="icon-circle"><i class="ri-bear-smile-line" style="font-size: 2rem;"></i></div>
-                    <h1>AnimeBear Login</h1>
-                </div>
-                <form id="loginForm">
-                    <div class="input-group">
-                        <label>USUÁRIO</label>
-                        <div class="input-wrapper">
-                            <i class="ri-user-line"></i>
-                            <input type="text" id="user" placeholder="Seu usuário" required>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label>SENHA</label>
-                        <div class="input-wrapper">
-                            <i class="ri-lock-line"></i>
-                            <input type="password" id="pass" placeholder="••••••••" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="primary-btn">ENTRAR NA LOJA</button>
-                </form>
-                <div class="signup-footer">
-                    <p>Não tem conta? <span class="btn-link" onclick="toggleForm(true)">Criar agora</span></p>
-                </div>
-            </div>
-
-            <div id="signup-area" class="hidden">
-                <div class="header">
-                    <h1>Nova Conta</h1>
-                </div>
-                <form id="signupForm">
-                    <div class="input-group">
-                        <input type="text" id="new-user" placeholder="Escolha um usuário" required>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" id="new-pass" placeholder="Escolha uma senha" required>
-                    </div>
-                    <button type="submit" class="primary-btn">CADASTRAR</button>
-                </form>
-                <div class="signup-footer">
-                    <p><span class="btn-link" onclick="toggleForm(false)">Voltar ao Login</span></p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- 1. LÓGICA DE NAVEGAÇÃO ENTRE TELAS ---
-        function toggleForm(isSignup) {
-            document.getElementById('login-area').classList.toggle('hidden', isSignup);
-            document.getElementById('signup-area').classList.toggle('hidden', !isSignup);
-        }
-
-        // --- 2. LÓGICA DE CADASTRO ---
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const u = document.getElementById('new-user').value;
-            const p = document.getElementById('new-pass').value;
-            let users = JSON.parse(localStorage.getItem('usuarios_db')) || [];
-            
-            users.push({user: u, pass: p});
-            localStorage.setItem('usuarios_db', JSON.stringify(users));
-            alert("Conta criada! Agora faça o login.");
-            toggleForm(false);
-        });
-
-        // --- 3. LÓGICA DE LOGIN PARA ABRIR A LOJA ---
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
-            let users = JSON.parse(localStorage.getItem('usuarios_db')) || [];
-
-            const userValido = users.find(account => account.user === u && account.pass === p);
-
-            if (userValido || (u === "admin" && p === "1234")) {
-                abrirLoja(u);
-            } else {
-                alert("Usuário ou senha incorretos!");
-            }
-        });
-
-        // --- 4. O SITE DA LOJA (ESTA PARTE ESTÁ "DENTRO" DO JS) ---
-        function abrirLoja(nomeUsuario) {
-            const app = document.getElementById('app-content');
-            
-            // Mudamos o fundo para algo mais fofo
-            document.body.style.alignItems = "flex-start";
-            
-            // Injetamos o HTML da Loja
-            app.innerHTML = `
-                <div style="text-align: center; width: 100%; padding-top: 50px;">
-                    <h1 style="color: white; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">🌸 Bem-vindo(a) à AnimeBear, ${nomeUsuario}!</h1>
-                    <p>Os ursinhos de anime mais fofos do mundo</p>
-                    <button onclick="location.reload()" style="background: #ef4444; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;">Sair</button>
-                </div>
-
-                <div class="shop-container">
-                    ${gerarProdutos()}
-                </div>
-            `;
-        }
-
-        function gerarProdutos() {
-            const produtos = [
-                { nome: "Urso Ninja (Leaf)", emoji: "🦊", preco: "89.90", desc: "Inspirado no Naruto" },
-                { nome: "Urso Pirata (Sunny)", emoji: "🏴‍☠️", preco: "95.00", desc: "Inspirado no Luffy" },
-                { nome: "Urso Saiyajin", emoji: "⚡", preco: "110.00", desc: "Inspirado no Goku" },
-                { nome: "Urso Titã", emoji: "🧱", preco: "120.00", desc: "Inspirado no Eren" },
-                { nome: "Urso Mago", emoji: "🧙", preco: "99.90", desc: "Inspirado no Black Clover" },
-                { nome: "Urso Caçador", emoji: "🎴", preco: "105.00", desc: "Inspirado no Tanjiro" }
-            ];
-
-            return produtos.map(p => `
-                <div class="bear-card">
-                    <span class="bear-emoji">${p.emoji}</span>
-                    <h3>${p.nome}</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">${p.desc}</p>
-                    <p class="price">R$ ${p.preco}</p>
-                    <button class="buy-btn" onclick="alert('Adicionado ao carrinho!')">COMPRAR</button>
-                </div>
-            `).join('');
-        }
-    </script>
-</body>
-</html>
+    if autenticar(user, pwd):
+        print("\nLogin realizado com sucesso!")
+        while True:
+            print("\n--- MENU ---")
+            print("1. Cadastrar Cliente")
+            print("2. Cadastrar Produto")
+            print("3. Registrar Venda")
+            print("4. Sair")
+            opcao = input("Escolha uma opção: ")
+           
+            if opcao == '1':
+                cadastrar_cliente(input("Nome: "), input("Email: "))
+            elif opcao == '2':
+                cadastrar_produto(input("Nome do produto: "), float(input("Preço: ")))
+            elif opcao == '3':
+                registrar_venda(input("ID do Cliente: "), float(input("Total da venda: ")))
+            elif opcao == '4':
+                print("Saindo...")
+                break
+            else:
+                print("Opção inválida!")
+    else:
+        print("Acesso negado! Usuário ou senha incorretos.")
